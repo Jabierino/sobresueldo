@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Sobresueldo</title>
+<meta name="description" content="Sátira política de cartas: de concejal a presidente. Gana quien más dinero acumula.">
+<meta name="theme-color" content="#f4ecd8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta property="og:title" content="Sobresueldo">
+<meta property="og:description" content="De concejal a presidente. Gana quien más dinero acumula (si no acaba en la cárcel).">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Aviso +18 -->
+  <section id="s-warn" class="screen paper-screen">
+    <div class="stamp">+18</div>
+    <h2>Aviso de contenido</h2>
+    <p>Esto es una <b>sátira</b>. Todos los partidos, personajes y sucesos son inventados; cualquier parecido con la realidad es pura coincidencia (o no).</p>
+    <p>Incluye humor negro, lenguaje adulto y <b>eventos fuertes</b> (guarros y de mal gusto). Puedes desactivarlos aquí o en Ajustes.</p>
+    <label class="check"><input type="checkbox" id="warn-strong" checked> Incluir eventos fuertes</label>
+    <button class="btn big" id="warn-ok">Soy mayor de edad, entrar</button>
+  </section>
+
+  <!-- Portada / título -->
+  <section id="s-title" class="screen paper-screen">
+    <div class="masthead small">El Diario Oficioso · Edición de mañana</div>
+    <h1 id="title-logo" class="logo">SOBRE<span>SUELDO</span></h1>
+    <p class="tagline">De concejal a presidente.<br>Gana quien más dinero acumula.</p>
+    <div id="title-char" class="title-char"></div>
+    <div id="title-record" class="record"></div>
+    <div class="menu">
+      <button class="btn big" id="btn-continue" hidden>Continuar partida</button>
+      <button class="btn big" id="btn-new">Nueva partida</button>
+      <div class="row">
+        <button class="btn" id="btn-ranking">Ranking</button>
+        <button class="btn" id="btn-achievements">Logros</button>
+        <button class="btn" id="btn-settings">Ajustes</button>
+      </div>
+    </div>
+    <p id="daily-note" class="note"></p>
+  </section>
+
+  <!-- Nombre -->
+  <section id="s-name" class="screen paper-screen">
+    <h2>¿Cómo te llamas, futuro presidente?</h2>
+    <p class="note">Saldrá en las portadas y en el ranking.</p>
+    <input id="name-input" maxlength="16" autocomplete="off" placeholder="Tu nombre">
+    <button class="btn big" id="name-ok">Jurar el cargo</button>
+  </section>
+
+  <!-- Juego -->
+  <section id="s-game" class="screen game">
+    <header class="meters">
+      <div class="meter money" id="m-money"><span class="ico">€</span><b id="v-money">0 €</b><i class="pv"></i><small class="cap">dinero</small></div>
+      <div class="meter pop" id="m-pop"><span class="ico">♥</span><div class="bar"><div class="fill" id="f-pop"></div></div><i class="pv"></i><small class="cap">amor del populacho</small></div>
+      <div class="meter dirt" id="m-dirt"><span class="ico">💩</span><div class="bar"><div class="fill" id="f-dirt"></div></div><i class="pv"></i><small class="cap">olor a caca</small></div>
+    </header>
+    <div class="strip"><span id="g-stage">Concejal</span><span id="g-turn">Turno 1/4</span><button class="icon-btn" id="g-menu" aria-label="Menú">☰</button></div>
+
+    <div class="ap-bar" id="ap-bar" hidden><span>Puntos: <b id="ap-dots"></b></span><button class="btn small primary" id="btn-endturn">Terminar turno →</button></div>
+    <div id="agenda-hint" class="advisor mini" hidden><div class="adv-face"></div><div class="bubble"><p>Tienes <b>4 puntos</b> por turno. Gástalos como quieras: atiende visitas en el <b>Despacho</b>, llama a tu <b>Agenda</b>, haz <b>Negocios</b> o aprueba <b>Leyes</b>. Quien se queda esperando, se enfada.</p><button class="link" id="hint-ok">Entendido</button></div></div>
+
+    <!-- Despacho: sala de espera y cartas -->
+    <main id="v-desk" class="view">
+      <div id="advisor" class="advisor" hidden><div class="adv-face"></div><div class="bubble"><p id="adv-text"></p><button class="link" id="adv-skip">Saltar tutorial</button></div></div>
+      <div id="waiting" class="list" hidden></div>
+      <div id="desk-card" class="desk-card">
+      <button class="link back-room" id="btn-room" hidden>← Volver a la sala de espera (no gasta punto)</button>
+      <div class="card-zone">
+        <div class="card" id="card">
+          <div class="ribbon" id="card-ribbon" hidden></div>
+          <div class="side-label l" id="lbl-l"></div><div class="side-label r" id="lbl-r"></div>
+          <div class="portrait" id="card-portrait"></div>
+          <div class="who" id="card-who"></div>
+          <p class="text" id="card-text"></p>
+        </div>
+      </div>
+      <div class="choices">
+        <button class="btn choice" id="btn-l"></button>
+        <button class="btn choice" id="btn-r"></button>
+      </div>
+      </div>
+    </main>
+
+    <!-- Agenda, negocios y leyes -->
+    <main id="v-agenda" class="view" hidden>
+      <div id="list-agenda" class="list"></div>
+      <div id="list-business" class="list" hidden></div>
+      <div id="list-laws" class="list" hidden></div>
+    </main>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="desk">Despacho</button>
+      <button class="tab" data-tab="agenda">Agenda</button>
+      <button class="tab" data-tab="business">Negocios</button>
+      <button class="tab" data-tab="laws">Leyes</button>
+    </nav>
+  </section>
+
+  <!-- Elecciones -->
+  <section id="s-election" class="screen paper-screen">
+    <div class="masthead small">Noche electoral</div>
+    <h2 id="el-title">Elecciones</h2>
+    <div id="el-char" class="title-char"></div>
+    <div class="poll"><div class="poll-label">Encuesta del Oficioso</div><div class="poll-bar"><div id="el-bar"></div></div><div id="el-pct" class="poll-pct"></div></div>
+    <p id="el-text" class="note"></p>
+    <div class="menu">
+      <button class="btn big primary" id="el-run">Presentarte</button>
+      <button class="btn big" id="el-retire">Retirarte</button>
+    </div>
+  </section>
+
+  <!-- Final -->
+  <section id="s-end" class="screen paper-screen">
+    <div class="paper end-paper">
+      <div class="masthead">El Diario Oficioso</div>
+      <div class="dateline" id="end-date"></div>
+      <div class="kicker">EDICIÓN ESPECIAL</div>
+      <h2 class="headline" id="end-head"></h2>
+      <div class="end-photo" id="end-photo"></div>
+      <div class="big-money" id="end-money"></div>
+      <p class="deck" id="end-detail"></p>
+    </div>
+    <div id="end-ach" class="end-ach"></div>
+    <div class="menu">
+      <button class="btn big primary" id="end-share">Compartir por WhatsApp</button>
+      <div class="row"><button class="btn" id="end-ranking">Ranking</button><button class="btn" id="end-again">Otra partida</button></div>
+    </div>
+  </section>
+
+  <!-- Ranking -->
+  <section id="s-ranking" class="screen paper-screen">
+    <h2>Ranking de colegas</h2>
+    <p class="note">Se llena con tus partidas y con los resultados que te mandan tus amigos (al abrir su enlace).</p>
+    <ol id="rank-list" class="rank"></ol>
+    <button class="btn big" data-back>Volver</button>
+  </section>
+
+  <!-- Logros -->
+  <section id="s-achievements" class="screen paper-screen">
+    <h2>Logros</h2>
+    <ul id="ach-list" class="ach"></ul>
+    <button class="btn big" data-back>Volver</button>
+  </section>
+
+  <!-- Ajustes -->
+  <section id="s-settings" class="screen paper-screen">
+    <h2>Ajustes</h2>
+    <label class="check"><input type="checkbox" id="set-strong"> Eventos fuertes (+18)</label>
+    <label class="check"><input type="checkbox" id="set-sound"> Sonido</label>
+    <label class="check"><input type="checkbox" id="set-tutorial"> Repetir el tutorial</label>
+    <label class="field">Nombre <input id="set-name" maxlength="16"></label>
+    <button class="btn" id="set-reset">Borrar todos mis datos</button>
+    <p class="note">Sobresueldo · demo 0.1 · Todo es inventado.</p>
+    <button class="btn big" data-back>Volver</button>
+  </section>
+
+  <!-- Estadísticas ocultas -->
+  <section id="s-stats" class="screen paper-screen">
+    <h2>Estadísticas de juego</h2>
+    <p class="note">Solo se guardan en este móvil. Copia y mándaselas a quien te pasó el juego.</p>
+    <pre id="stats-summary" class="stats"></pre>
+    <button class="btn big primary" id="stats-copy">Copiar datos</button>
+    <button class="btn big" data-back>Volver</button>
+  </section>
+
+  <!-- Portada de periódico (superpuesta) -->
+  <div id="o-news" class="overlay" hidden>
+    <div class="paper news-paper">
+      <div class="masthead">El Diario Oficioso</div>
+      <div class="dateline" id="news-date"></div>
+      <h2 class="headline" id="news-head"></h2>
+      <div class="news-body"><div class="news-photo" id="news-photo"></div><p class="deck" id="news-sub"></p></div>
+      <div class="fx-chips" id="news-fx"></div>
+      <button class="btn big primary" id="news-ok">Seguir</button>
+    </div>
+  </div>
+
+  <!-- Menú de partida -->
+  <div id="o-menu" class="overlay" hidden>
+    <div class="paper sheet">
+      <h2>Pausa</h2>
+      <button class="btn big" id="menu-resume">Seguir jugando</button>
+      <button class="btn big" id="menu-title">Guardar y salir</button>
+      <button class="btn" id="menu-quit">Abandonar partida</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
